@@ -3,15 +3,15 @@ SCT Mock
 Мок-сервис для обучения модели и тестирования
 ----------------
 
-### Подготовка
-Установка зависимостей:
+### Запуск
+Сборка:
 ```sh
-$  pip install -r requirements.txt  
+$   docker build -t mock  . 
 ```
 
 Запуск проекта:
 ```sh
-$  python main.py
+$  docker run -d --name mock -e MOCK_SERVER_NUMBER=5 -p 8080:8080 mock
 ```
 ------------------
 ### Конфигурирование
