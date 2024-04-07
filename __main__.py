@@ -1,7 +1,8 @@
 from aiohttp import web
 from configargparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
-from api.stupid import Stupid
+from api.stupid_handler import StupidHandler
+from api.stats_handler import StatsHandler
 
 # Номер сервера
 server_number = 1
@@ -22,7 +23,9 @@ server_number = args.server_number
 
 # Энд-поинты
 app = web.Application()
-stupid = Stupid(server_number)
+stupid = StupidHandler(server_number)
+stats = StatsHandler()
 app.router.add_route('GET', '/hello', stupid.hello)
+app.router.add_route('GET', '/stats', stats.get_stats)
 
 web.run_app(app, host=args.api_host, port=args.api_port)
