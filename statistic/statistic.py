@@ -1,14 +1,14 @@
-from statistic.monitoring import Monitoring
+from statistic.monitoring import Monitoring, Load
 import asyncio
 
+
 class Statistic:
+    __monitoring = Monitoring()
+    __downtime: int = 0
+    __overload: int = 0
+    __completed: int = 0
 
-    monitoring = Monitoring()
-    downtime = 0
-    overload = 0
-    completed = 0
-
-    MONITORING_DELAY = 100
+    __MONITORING_DELAY = 100
 
     def __new__(cls):
         if not hasattr(cls, 'instance'):
@@ -19,19 +19,23 @@ class Statistic:
         loop = asyncio.get_event_loop()
         loop.create_task(self.update_stats())
 
+    async def make_load(self, load_type: Load = Load.LOW):
+        await self.__monitoring.fake_load(load_type)
+        self.__completed += 1
 
-    def start_process(self):
-        self.monitoring.start_process()
+    def clear_data(self):
+        self.__downtime, self.__overload, self.__completed = 0, 0, 0
 
-    def end_process(self):
-        self.monitoring.complete_process()
-        self.completed += 1
-
+    def get_stats(self):
+        old_downtime, old_overload, old_completed = self.__downtime, self.__overload, self.__completed
+        self.clear_data()
+        return old_downtime, old_overload, old_completed
 
     async def update_stats(self):
         while True:
-            if self.monitoring.current_process_count <= 0:
-                self.downtime += self.MONITORING_DELAY
-            if self.monitoring.current_process_count > self.monitoring.MAX_PROCESS_COUNT:
-                self.overload += self.MONITORING_DELAY
-            await asyncio.sleep(self.MONITORING_DELAY / 1000)
+            print(self.__monitoring.working_process_count)
+            if self.__monitoring.working_process_count <= 0:
+                self.__downtime += self.__MONITORING_DELAY
+            if self.__monitoring.working_process_count > self.__monitoring.max_process_count:
+                self.__overload += self.__MONITORING_DELAY
+            await asyncio.sleep(self.__MONITORING_DELAY / 1000)

@@ -7,7 +7,8 @@ class StatsHandler:
     def __init__(self):
         self.statistic = Statistic()
 
-    async def get_stats(self, request):
-        return web.json_response({"completed": self.statistic.completed,
-                                  "overload": self.statistic.overload,
-                                  "downtime": self.statistic.downtime})
+    async def get_current_stats(self, request):
+        downtime, overload, completed = self.statistic.get_stats()
+        return web.json_response({"completed": completed,
+                                  "overload": overload,
+                                  "downtime": downtime})
