@@ -33,7 +33,6 @@ class Monitoring:
         self.start_process()
         await asyncio.sleep(load_type.value / 1000)
         self.complete_process()
-        print("Complete process")
 
     def complete_process(self):
         self._working_process_count -= 1

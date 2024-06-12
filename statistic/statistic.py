@@ -33,7 +33,6 @@ class Statistic:
 
     async def update_stats(self):
         while True:
-            # print(self.__monitoring.working_process_count)
             if self.__monitoring.working_process_count <= 0:
                 self.__downtime += self.__MONITORING_DELAY
             if self.__monitoring.working_process_count > self.__monitoring.max_process_count:
